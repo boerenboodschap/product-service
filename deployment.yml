@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  labels:
+    app: boerenboodschap
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: boerenboodschap
+  template:
+    metadata:
+      labels:
+        app: boerenboodschap
+    spec:
+      containers:
+        - name: product-service
+          image: tuin/bb-product-service:latest
+          ports:
+            - containerPort: 80
