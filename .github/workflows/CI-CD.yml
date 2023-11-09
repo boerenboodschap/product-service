@@ -30,6 +30,20 @@ jobs:
       - name: Super-Linter
         uses: super-linter/super-linter@v5.6.1
 
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Test
+      run: dotnet test --verbosity normal
+
   sast:
     needs: build
     runs-on: ubuntu-latest
