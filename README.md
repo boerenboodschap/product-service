@@ -1,3 +1,5 @@
+[![GitHub Super-Linter](https://github.com/super-linter/super-linter/actions/workflows/ci.yml/badge.svg)](https://github.com/boerenboodschap/product-service)
+
 # product-service
 
 ## status
