@@ -22,8 +22,16 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-  sast:
+  lint:
     needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Super-Linter
+        uses: super-linter/super-linter@v5.6.1
+
+  sast:
+    needs: [build, lint]
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +39,7 @@ jobs:
         uses: semgrep/semgrep-action@v1
 
   dockerhub:
-    needs: [build, sast]
+    needs: [build, sast, lint]
     runs-on: ubuntu-latest
   
     steps:
