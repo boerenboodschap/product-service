@@ -19,11 +19,19 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    # - name: Test
-    #   run: dotnet test --no-build --verbosity normal
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+  sast:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: semgrep-action
+        uses: semgrep/semgrep-action@v1
 
   dockerhub:
-    needs: build
+    needs: [build, sast]
     runs-on: ubuntu-latest
   
     steps:
