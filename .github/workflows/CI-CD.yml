@@ -54,7 +54,7 @@ jobs:
         uses: semgrep/semgrep-action@v1
 
   dockerhub:
-    needs: [build, sast, lint]
+    needs: [build, sast, lint, test]
     runs-on: ubuntu-latest
   
     steps:
