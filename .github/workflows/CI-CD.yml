@@ -33,7 +33,6 @@ jobs:
   sonarcloud:
     needs: build
     runs-on: windows-latest
-    name: Build and analyze
 
     steps:
       - name: Set up JDK 17
