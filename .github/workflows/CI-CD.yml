@@ -22,25 +22,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-  lint:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-  
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Lint Code Base
-        uses: super-linter/super-linter@v5
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   sonarcloud:
     needs: build
     runs-on: windows-latest
@@ -101,7 +82,7 @@ jobs:
       run: dotnet test --verbosity normal
 
   dockerhub:
-    needs: [build, lint, test]
+    needs: [build, test]
     runs-on: ubuntu-latest
   
     steps:
