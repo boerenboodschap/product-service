@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMassTransit(config =>
 {
-    config.AddConsumer<GettingStartedConsumer>(); // Add your consumer
+    config.AddConsumer<GettingStartedConsumer>();
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -29,10 +29,6 @@ builder.Services.AddMassTransit(config =>
             h.Password("guest");
         });
         cfg.ConfigureEndpoints(ctx);
-        // cfg.ReceiveEndpoint("/", ep =>
-        // {
-        //     ep.ConfigureConsumer<YourMessageConsumer>(ctx);
-        // });
     });
 });
 
