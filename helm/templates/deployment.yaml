@@ -40,20 +40,19 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          env:
+            - name: ProductDatabase__ConnectionString
+              value: "mongodb://root:GETTHISFROMSECRETS@mongodb:27017/"
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/products
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/products
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
