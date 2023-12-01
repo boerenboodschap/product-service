@@ -1,6 +1,6 @@
-[![GitHub Super-Linter](https://github.com/boerenboodschap/product-service/actions/workflows/CI-CD.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
-
 # product-service
+
+[![GitHub Super-Linter](https://github.com/boerenboodschap/product-service/actions/workflows/CI-CD.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 ## Run the application
 
@@ -8,7 +8,7 @@
 
 with docker-compose: ``docker compose up``
 
-with kubernetes: 
+with kubernetes:
 
 1. ``helm install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb``
 
