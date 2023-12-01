@@ -18,18 +18,36 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Masstransit Message Bus
+string host = "localhost";
+string username = "guest";
+string password = "guest";
+
+bool isRabbitMQAvailable = RabbitMQChecker.IsRabbitMQAvailable(host, username, password);
+
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<GettingStartedConsumer>();
-    config.UsingRabbitMq((ctx, cfg) =>
+
+    if (isRabbitMQAvailable)
     {
-        cfg.Host("localhost", "/", h =>
+        config.UsingRabbitMq((ctx, cfg) =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            cfg.Host(host, "/", h =>
+            {
+                h.Username(username);
+                h.Password(password);
+            });
+            cfg.ConfigureEndpoints(ctx);
         });
-        cfg.ConfigureEndpoints(ctx);
-    });
+    }
+    else
+    {
+        config.UsingInMemory((ctx, cfg) =>
+        {
+            cfg.ConfigureEndpoints(ctx);
+        });
+    }
 });
 
 var app = builder.Build();
@@ -39,10 +57,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// app.MapGet("/", () => "Hello World!");
-
-// app.Run();
 
 app.UseHttpsRedirection();
 
