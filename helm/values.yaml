@@ -9,6 +9,11 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+mongo:
+  username: root
+  password: mongo
+  host: mongodb
+  port: 27017
 
 imagePullSecrets: []
 nameOverride: ""

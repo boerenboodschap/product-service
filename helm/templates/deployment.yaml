@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           env:
             - name: ProductDatabase__ConnectionString
-              value: "mongodb://root:GETTHISFROMSECRETS@mongodb:27017/"
+              value: "mongodb://{{ .Values.mongo.username }}:{{ .Values.mongo.password }}@{{ .Values.mongo.host }}:{{ .Values.mongo.port }}/"
           livenessProbe:
             httpGet:
               path: /api/products
