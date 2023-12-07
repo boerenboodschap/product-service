@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -9,12 +10,17 @@ public class Product
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
-    [BsonElement("Name")]
-    public string ProductName { get; set; } = null!;
+    public string? FarmerId { get; set; }
 
+    [Required(ErrorMessage = "Price is required.")]
+    [Range(0, double.MaxValue, ErrorMessage = "Price must be a non-negative value.")]
     public decimal Price { get; set; }
 
-    public string Category { get; set; } = null!;
+    [Required(ErrorMessage = "Name is required.")]
+    [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters.")]
+    public string? Name { get; set; }
 
-    public string Author { get; set; } = null!;
+    public string Description { get; set; } = "";
+
+    public string Category { get; set; } = "";
 }
