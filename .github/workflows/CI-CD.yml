@@ -162,12 +162,12 @@ jobs:
       - name: pwd and ls
         run: |
           pwd
-          ls -lah
+          ls
 
       # Install product-service helm chart
       - name: Install Product-service Helm Chart
         run: |
-          helm install product-service -f ./helm
+          helm install product-service -f ./helm --generate-name
 
       # Jmeter load test
       - name: Set up Java
