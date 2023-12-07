@@ -1,24 +1,24 @@
 name: CI-CD
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
 
   lint:
     needs: build
@@ -66,10 +66,10 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
+          distribution: "zulu" # Alternative distribution options are available.
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -93,7 +93,7 @@ jobs:
         run: dotnet restore
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
@@ -106,15 +106,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Test
-      run: dotnet test --verbosity normal
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Test
+        run: dotnet test --verbosity normal
 
   performance-test:
     needs: build
@@ -158,17 +158,23 @@ jobs:
         run: |
           helm install my-mongodb bitnami/mongodb
 
+      # print the working derectory and do ls command
+      - name: pwd and ls
+        run: |
+          pwd
+          ls -lah
+
       # Install product-service helm chart
       - name: Install Product-service Helm Chart
         run: |
-          helm install product-service product-service -f ./helm
+          helm install product-service -f ./helm
 
       # Jmeter load test
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'  # You can adjust the Java distribution/version as needed
-          java-version: '11'
+          distribution: "adopt" # You can adjust the Java distribution/version as needed
+          java-version: "11"
 
       - name: Download Apache JMeter
         run: |
@@ -188,14 +194,14 @@ jobs:
   dockerhub:
     needs: [build, test, performance-test, lint]
     runs-on: ubuntu-latest
-  
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Install Docker
-      uses: docker/setup-buildx-action@v1
-    - name: Login to Docker
-      run: docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
-    - name: Build Image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest ./src
-    - name: Push Image To DockerHub
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+      - uses: actions/checkout@v3
+      - name: Install Docker
+        uses: docker/setup-buildx-action@v1
+      - name: Login to Docker
+        run: docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest ./src
+      - name: Push Image To DockerHub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
