@@ -161,7 +161,7 @@ jobs:
       # Install product-service helm chart
       - name: Install Product-service Helm Chart
         run: |
-          helm install product-service -f ./helm
+          helm install product-service product-service -f ./helm
 
       # Jmeter load test
       - name: Set up Java
