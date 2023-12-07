@@ -95,7 +95,7 @@ jobs:
 
       - name: Download Apache JMeter
         run: |
-          wget https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.4.1.tgz
+          wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.2.tgz
           tar -xzf apache-jmeter-5.6.2.tgz
 
       - name: Run JMeter Load Test
