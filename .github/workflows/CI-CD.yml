@@ -87,6 +87,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # set up a local cluster
+      - name: Install kubectl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https gnupg2 curl
+          curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+          echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+          sudo apt-get update
+          sudo apt-get install -y kubectl
+
+      - name: Download and install Minikube
+        run: |
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube
+          sudo mv minikube /usr/local/bin/
+
+      - name: Start Minikube
+        run: |
+          minikube start --driver=docker
+          minikube status
+
+      # Install MongoDB helm chart
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - name: Add Helm repository for MongoDB
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
+      - name: Install MongoDB Helm Chart
+        run: |
+          helm install my-mongodb bitnami/mongodb
+
+      # Install product-service helm chart
+      - name: Install Product-service Helm Chart
+        run: |
+          helm install product-service -f ./helm
+
+      # Jmeter load test
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
