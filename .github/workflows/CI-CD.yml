@@ -100,7 +100,7 @@ jobs:
 
       - name: Run JMeter Load Test
         run: |
-          ./apache-jmeter-5.4.1/bin/jmeter -n -t tests/load/sample_test.jmx -l test_results.jtl
+          ./apache-jmeter-5.6.2/bin/jmeter -n -t tests/load/sample_test.jmx -l test_results.jtl
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v2
