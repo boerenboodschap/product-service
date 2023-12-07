@@ -103,7 +103,7 @@ jobs:
           path: other_reports/
 
   dockerhub:
-    needs: [build, test]
+    needs: [build, test, JMeter]
     runs-on: ubuntu-latest
   
     steps:
