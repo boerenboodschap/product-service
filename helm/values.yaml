@@ -11,7 +11,7 @@ image:
 
 mongo:
   username: root
-  password: mongo
+  password: bQYAxSMQtV
   host: mongodb
   port: 27017
 
