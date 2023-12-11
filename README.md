@@ -6,15 +6,15 @@
 
 ### Locally
 
-with docker-compose: ``docker compose up``
+with docker-compose: `docker compose up`
 
 with kubernetes:
 
-1. ``helm install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb``
+1. `helm install mongodb oci://registry-1.docker.io/bitnamicharts/mongodb`
 
 2. Zoek in kubernetes secrets naar de credentials van de database en zet die in de connectionstring in deployment.yaml.
 
-3. ``helm install product-service ./helm``
+3. `helm install product-service ./helm`
 
 ## status
 
