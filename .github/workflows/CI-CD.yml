@@ -104,7 +104,6 @@ jobs:
   zap_scan:
     needs: build
     runs-on: ubuntu-latest
-    name: Scan the webapplication
     steps:
       - name: Checkout
         uses: actions/checkout@v2
