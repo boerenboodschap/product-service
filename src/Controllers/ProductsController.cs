@@ -30,6 +30,27 @@ public class ProductsController : ControllerBase
         return Product;
     }
 
+    [HttpGet("{id:length(24)}/stock/{amount}")]
+    public async Task<IActionResult> Get(string id, int amount)
+    {
+        var Product = await _ProductsService.GetAsync(id);
+
+        if (Product is null)
+        {
+            return NotFound();
+        }
+
+        // remove the specified stock amount
+        if (amount > Product.Stock) {
+            return BadRequest();
+        }
+        Product.Stock -= amount;
+
+        await _ProductsService.UpdateAsync(id, Product);
+
+        return NoContent();
+    }
+
     [HttpPost]
     public async Task<IActionResult> Post(Product newProduct)
     {
