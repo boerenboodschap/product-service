@@ -11,8 +11,8 @@ image:
 
 mongo:
   username: root
-  password: bQYAxSMQtV
-  host: mongodb
+  password: bmeS09BAon
+  host: product-mongodb
   port: 27017
 
 imagePullSecrets: []
@@ -48,7 +48,7 @@ securityContext:
 
 service:
   name: products
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:
