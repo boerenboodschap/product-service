@@ -41,7 +41,8 @@ public class ProductsController : ControllerBase
         }
 
         // remove the specified stock amount
-        if (amount > Product.Stock) {
+        if (amount > Product.Stock)
+        {
             return BadRequest();
         }
         Product.Stock -= amount;
