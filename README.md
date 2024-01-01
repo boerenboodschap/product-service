@@ -18,6 +18,6 @@ with kubernetes:
 
 ## status
 
-This dotnet 7.0 api can handle basic CRUD operations on a mongoDB database that can be run with docker-compose.
+This dotnet 7.0 API can handle basic CRUD operations on a mongoDB database that can be run with docker-compose.
 
 Start the dev server with: `cd ./src/docker-compose && docker compose up`
