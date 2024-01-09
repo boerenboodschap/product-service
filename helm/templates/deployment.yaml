@@ -45,11 +45,11 @@ spec:
               value: "mongodb://{{ .Values.mongo.username }}:{{ .Values.mongo.password }}@{{ .Values.mongo.host }}:{{ .Values.mongo.port }}/"
           livenessProbe:
             httpGet:
-              path: /api/products
+              path: /metrics
               port: http
           readinessProbe:
             httpGet:
-              path: /api/products
+              path: /metrics
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
