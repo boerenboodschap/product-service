@@ -21,6 +21,11 @@ public class ProductsService
             ProductDatabaseSettings.Value.ProductsCollectionName);
     }
 
+    public IQueryable<Product> GetQueryable()
+    {
+        return _productsCollection.AsQueryable();
+    }
+
     public async Task<List<Product>> GetAsync() =>
         await _productsCollection.Find(_ => true).ToListAsync();
 
