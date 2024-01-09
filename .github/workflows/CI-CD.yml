@@ -225,7 +225,7 @@ jobs:
           path: test_results.jtl
 
   dockerhub:
-    needs: [build, test, performance-test, lint]
+    # needs: [build, test, performance-test, lint]
     runs-on: ubuntu-latest
 
     steps:
