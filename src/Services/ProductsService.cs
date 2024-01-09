@@ -1,6 +1,7 @@
 using product_service.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace product_service.Services;
 
@@ -21,9 +22,32 @@ public class ProductsService
             ProductDatabaseSettings.Value.ProductsCollectionName);
     }
 
-    public IQueryable<Product> GetQueryable()
+    public async Task<List<Product>> GetFilteredProductsAsync(ProductFilterOptions filterOptions)
     {
-        return _productsCollection.AsQueryable();
+        IQueryable<Product> query = _productsCollection.AsQueryable();
+
+        // Apply filters based on filter options
+        if (filterOptions != null)
+        {
+            if (!string.IsNullOrEmpty(filterOptions.Name))
+            {
+                query = query.Where(p => p.Name.Contains(filterOptions.Name));
+            }
+
+            // Add more filters based on other properties if needed
+            // query = query.Where(p => p.Category == filterOptions.Category);
+            // query = query.Where(p => p.Price >= filterOptions.MinPrice && p.Price <= filterOptions.MaxPrice);
+        }
+
+        // Pagination
+        int pageNumber = filterOptions.PageNumber ?? 1; // Default to page 1 if pageNumber is not provided
+        int pageSize = filterOptions.PageSize ?? 10; // Default page size to 10 if pageSize is not provided
+
+        var paginatedProducts = await query.Skip((pageNumber - 1) * pageSize)
+                                          .Take(pageSize)
+                                          .ToListAsync();
+
+        return paginatedProducts;
     }
 
     public async Task<List<Product>> GetAsync() =>
