@@ -2,9 +2,6 @@ using product_service.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-
 
 namespace product_service.Services;
 
@@ -25,44 +22,22 @@ public class ProductsService
             ProductDatabaseSettings.Value.ProductsCollectionName);
     }
 
-    public async Task<List<Product>> GetFilteredProductsAsync(ProductFilterOptions filterOptions)
+    public async Task<List<Product>> GetAsync(int page, int pageSize, string filter)
     {
-        try
+        var filterBuilder = Builders<Product>.Filter.Empty;
+
+        if (!string.IsNullOrWhiteSpace(filter))
         {
-            IQueryable<Product> query = _productsCollection.AsQueryable();
-
-            // Apply filters based on filter options
-            if (filterOptions != null)
-            {
-                if (!string.IsNullOrEmpty(filterOptions.Name))
-                {
-                    query = query.Where(p => p.Name.Contains(filterOptions.Name));
-                }
-
-                // Add more filters based on other properties if needed
-                // query = query.Where(p => p.Category == filterOptions.Category);
-                // query = query.Where(p => p.Price >= filterOptions.MinPrice && p.Price <= filterOptions.MaxPrice);
-            }
-
-            // Pagination
-            int pageNumber = filterOptions.PageNumber ?? 1; // Default to page 1 if pageNumber is not provided
-            int pageSize = filterOptions.PageSize ?? 10; // Default page size to 10 if pageSize is not provided
-
-            var paginatedProducts = await query.Skip((pageNumber - 1) * pageSize)
-                                              .Take(pageSize)
-                                              .ToListAsync();
-
-            return paginatedProducts;
+            filterBuilder = Builders<Product>.Filter.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
         }
-        catch (Exception ex)
-        {
-            // Handle exceptions appropriately
-            throw new Exception("Error retrieving filtered products", ex);
-        }
+
+        var products = await _productsCollection.Find(filterBuilder)
+                                .Skip((page - 1) * pageSize)
+                                .Limit(pageSize)
+                                .ToListAsync();
+
+        return products;
     }
-
-    public async Task<List<Product>> GetAsync() =>
-        await _productsCollection.Find(_ => true).ToListAsync();
 
     public async Task<Product?> GetAsync(string id) =>
         await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

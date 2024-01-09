@@ -13,21 +13,23 @@ public class ProductsController : ControllerBase
     public ProductsController(ProductsService ProductsService) =>
         _ProductsService = ProductsService;
 
-    // [HttpGet]
-    // public async Task<List<Product>> Get() =>
-    //     await _ProductsService.GetAsync();
-
     [HttpGet]
-    public async Task<ActionResult<List<Product>>> Get([FromQuery] ProductFilterOptions filterOptions)
+    public async Task<ActionResult<IEnumerable<Product>>> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string filter = "")
     {
         try
         {
-            var paginatedProducts = await _ProductsService.GetFilteredProductsAsync(filterOptions);
-            return Ok(paginatedProducts);
+            var products = await _ProductsService.GetAsync(page, pageSize, filter);
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(products);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 

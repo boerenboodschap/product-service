@@ -35,7 +35,7 @@ public sealed class SampleService : BackgroundService
                     // Something failed? OK, whatever. We will just try again.
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(30), cancel);
+                await Task.Delay(TimeSpan.FromSeconds(5), cancel);
             }
         }
         catch (OperationCanceledException) when (cancel.IsCancellationRequested)
