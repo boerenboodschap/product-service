@@ -2,6 +2,9 @@ using product_service.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace product_service.Services;
 
@@ -24,30 +27,38 @@ public class ProductsService
 
     public async Task<List<Product>> GetFilteredProductsAsync(ProductFilterOptions filterOptions)
     {
-        IQueryable<Product> query = _productsCollection.AsQueryable();
-
-        // Apply filters based on filter options
-        if (filterOptions != null)
+        try
         {
-            if (!string.IsNullOrEmpty(filterOptions.Name))
+            IQueryable<Product> query = _productsCollection.AsQueryable();
+
+            // Apply filters based on filter options
+            if (filterOptions != null)
             {
-                query = query.Where(p => p.Name.Contains(filterOptions.Name));
+                if (!string.IsNullOrEmpty(filterOptions.Name))
+                {
+                    query = query.Where(p => p.Name.Contains(filterOptions.Name));
+                }
+
+                // Add more filters based on other properties if needed
+                // query = query.Where(p => p.Category == filterOptions.Category);
+                // query = query.Where(p => p.Price >= filterOptions.MinPrice && p.Price <= filterOptions.MaxPrice);
             }
 
-            // Add more filters based on other properties if needed
-            // query = query.Where(p => p.Category == filterOptions.Category);
-            // query = query.Where(p => p.Price >= filterOptions.MinPrice && p.Price <= filterOptions.MaxPrice);
+            // Pagination
+            int pageNumber = filterOptions.PageNumber ?? 1; // Default to page 1 if pageNumber is not provided
+            int pageSize = filterOptions.PageSize ?? 10; // Default page size to 10 if pageSize is not provided
+
+            var paginatedProducts = await query.Skip((pageNumber - 1) * pageSize)
+                                              .Take(pageSize)
+                                              .ToListAsync();
+
+            return paginatedProducts;
         }
-
-        // Pagination
-        int pageNumber = filterOptions.PageNumber ?? 1; // Default to page 1 if pageNumber is not provided
-        int pageSize = filterOptions.PageSize ?? 10; // Default page size to 10 if pageSize is not provided
-
-        var paginatedProducts = await query.Skip((pageNumber - 1) * pageSize)
-                                          .Take(pageSize)
-                                          .ToListAsync();
-
-        return paginatedProducts;
+        catch (Exception ex)
+        {
+            // Handle exceptions appropriately
+            throw new Exception("Error retrieving filtered products", ex);
+        }
     }
 
     public async Task<List<Product>> GetAsync() =>
