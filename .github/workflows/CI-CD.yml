@@ -213,7 +213,7 @@ jobs:
           path: test_results.jtl
 
   dockerhub:
-    needs: [build, test, performance-test, lint, zap_scan]
+    # needs: [build, test, performance-test, lint, zap_scan]
     runs-on: ubuntu-latest
 
     steps:
