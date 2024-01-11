@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: run the app with docker compose
+      - name: docker compose
         run: cd ./docker-compose && docker compose up -d
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.3.0
