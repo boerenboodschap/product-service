@@ -105,12 +105,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: zaproxy/action-baseline@v0.10.0
+      - name: run the app with docker compose
+        run: cd ./docker-compose && docker compose up -d
+      - name: zap scan
+        uses: zaproxy/action-baseline@v0.10.0
         with:
           # GitHub Token to create issues in the repository
           token: ${{ github.token }}
           # Target URL
-          target: https://teunspithoven.nl
+          target: http://localhost:8080
           # # Relative path of the ZAP configuration file
           # rules_file_name: # optional
           # # The Docker file to be executed
