@@ -107,7 +107,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run the app with docker compose
-        run: cd ./docker-compose && docker compose up -d
+        run: cd ./docker-compose && docker compose up
+      - name: Debug Target URL
+        run: echo "Target URL:http://localhost:8080"
       - name: zap scan
         uses: zaproxy/action-baseline@v0.10.0
         with:
@@ -120,7 +122,7 @@ jobs:
           # # The Docker file to be executed
           # docker_name: # default is ghcr.io/zaproxy/zaproxy:stable
           # # Additional command line options
-          # cmd_options: # optional
+          cmd_options: -t http://localhost:8080/path/to/your/app
           # # The title for the GitHub issue to be created
           # issue_title: # optional, default is ZAP Scan Baseline Report
           # # The action status will be set to fail if ZAP identifies any alerts during the baseline scan
