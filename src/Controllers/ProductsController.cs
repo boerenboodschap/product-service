@@ -17,11 +17,16 @@ public class ProductsController : ControllerBase
         _ProductsService = ProductsService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Product>>> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string filter = "")
+    public async Task<ActionResult<IEnumerable<Product>>> Get(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string name = "",
+            [FromQuery] string userId = ""
+        )
     {
         try
         {
-            var products = await _ProductsService.GetAsync(page, pageSize, filter);
+            var products = await _ProductsService.GetAsync(page, pageSize, name, userId);
 
             if (products == null || products.Count == 0)
             {

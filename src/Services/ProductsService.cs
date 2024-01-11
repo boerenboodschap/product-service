@@ -22,13 +22,18 @@ public class ProductsService
             ProductDatabaseSettings.Value.ProductsCollectionName);
     }
 
-    public async Task<List<Product>> GetAsync(int page, int pageSize, string filter)
+    public async Task<List<Product>> GetAsync(int page, int pageSize, string name, string userId)
     {
         var filterBuilder = Builders<Product>.Filter.Empty;
 
-        if (!string.IsNullOrWhiteSpace(filter))
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            filterBuilder = Builders<Product>.Filter.Where(x => x.Name.ToLower().Contains(filter.ToLower()));
+            filterBuilder = Builders<Product>.Filter.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(userId))
+        {
+            filterBuilder = Builders<Product>.Filter.Where(x => x.UserId.ToLower().Contains(userId.ToLower()));
         }
 
         var products = await _productsCollection.Find(filterBuilder)
