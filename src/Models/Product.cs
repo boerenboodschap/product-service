@@ -9,6 +9,7 @@ public class Product
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
+    public string? UserId { get; set; }
 
     public string? FarmerId { get; set; }
 

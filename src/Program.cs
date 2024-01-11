@@ -1,16 +1,40 @@
-// using Microsoft.EntityFrameworkCore;
 using product_service.Models;
 using product_service.Services;
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using MassTransit;
 using Consumers;
 
 using Prometheus;
 using Sample.Web;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Auth0
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("read:messages", policy => policy.Requirements.Add(new
+    HasScopeRequirement("read:messages", domain)));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
 // Database
 builder.Services.Configure<ProductDatabaseSettings>(
@@ -22,9 +46,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Masstransit Message Bus
-string host = "localhost";
-string username = "guest";
-string password = "guest";
+string host = builder.Configuration["MassTransit:Host"] ?? "localhost";
+string username = builder.Configuration["MassTransit:Username"] ?? "guest";
+string password = builder.Configuration["MassTransit:Password"] ?? "guest";
 
 bool isRabbitMQAvailable = RabbitMQChecker.IsRabbitMQAvailable(host, username, password);
 
@@ -79,10 +103,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.MapControllers();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
@@ -104,6 +129,9 @@ app.UseEndpoints(endpoints =>
     // * ASP.NET health check statuses (configured above)
     // * custom business logic metrics published by the SampleService class
     endpoints.MapMetrics();
+
+    // Auth0
+    endpoints.MapControllers();
 });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 

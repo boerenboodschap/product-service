@@ -1,6 +1,9 @@
 using product_service.Models;
 using product_service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace product_service.Controllers;
 
@@ -69,21 +72,32 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Post(Product newProduct)
     {
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        newProduct.UserId = userId;
+
         await _ProductsService.CreateAsync(newProduct);
 
         return CreatedAtAction(nameof(Get), new { id = newProduct.Id }, newProduct);
     }
 
     [HttpPut("{id:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Update(string id, Product updatedProduct)
     {
-        var Product = await _ProductsService.GetAsync(id);
 
+        var Product = await _ProductsService.GetAsync(id);
         if (Product is null)
         {
             return NotFound();
+        }
+
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId != Product.UserId)
+        {
+            return Unauthorized();
         }
 
         updatedProduct.Id = Product.Id;
@@ -94,13 +108,20 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id:length(24)}")]
+    [Authorize]
     public async Task<IActionResult> Delete(string id)
     {
-        var Product = await _ProductsService.GetAsync(id);
 
+        var Product = await _ProductsService.GetAsync(id);
         if (Product is null)
         {
             return NotFound();
+        }
+
+        string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId != Product.UserId)
+        {
+            return Unauthorized();
         }
 
         await _ProductsService.RemoveAsync(id);
