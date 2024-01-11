@@ -67,7 +67,7 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.3.0
         with:
-          target: 'http://localhost:8080/'
+          target: 'http://localhost:8080/api/products'
 
   sonarcloud:
     needs: [build, zap_scan]
