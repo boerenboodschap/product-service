@@ -107,7 +107,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: run the app with docker compose
-        run: cd ./docker-compose && docker compose up
+        run: cd ./docker-compose && docker compose up -d
       - name: Debug Target URL
         run: echo "Target URL:http://localhost:8080"
       - name: zap scan
