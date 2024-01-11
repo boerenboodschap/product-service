@@ -102,7 +102,7 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
   zap_scan:
-    # needs: build
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker
