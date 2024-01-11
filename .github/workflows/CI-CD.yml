@@ -64,27 +64,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: run the app with docker compose
         run: cd ./docker-compose && docker compose up -d
-      - name: zap scan
-        uses: zaproxy/action-baseline@v0.10.0
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.3.0
         with:
-          # GitHub Token to create issues in the repository
-          token: ${{ github.token }}
-          # Target URL
-          target: http://docker-compose-product-service-1:8080
-          # # Relative path of the ZAP configuration file
-          # rules_file_name: # optional
-          # # The Docker file to be executed
-          # docker_name: # default is ghcr.io/zaproxy/zaproxy:stable
-          # # Additional command line options
-          # cmd_options: -t http://localhost:8080/api/products
-          # # The title for the GitHub issue to be created
-          # issue_title: # optional, default is ZAP Scan Baseline Report
-          # # The action status will be set to fail if ZAP identifies any alerts during the baseline scan
-          # fail_action: # optional
-          # # The action will file the report to the GitHub issue using the issue_title input
-          # allow_issue_writing: # optional, default is true
-          # # The name of the artifact that contains the ZAP reports
-          # artifact_name: # optional, default is zap_scan
+          target: 'http://localhost:8080/'
 
   sonarcloud:
     needs: [build, zap_scan]
