@@ -33,7 +33,7 @@ public class ProductsService
 
         if (!string.IsNullOrWhiteSpace(userId))
         {
-            filterBuilder = Builders<Product>.Filter.Where(x => x.UserId.ToLower().Contains(userId.ToLower()));
+            filterBuilder = Builders<Product>.Filter.Where(x => x.UserId.Equals(userId));
         }
 
         var products = await _productsCollection.Find(filterBuilder)
