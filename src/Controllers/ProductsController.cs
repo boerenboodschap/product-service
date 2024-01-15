@@ -2,7 +2,6 @@ using product_service.Models;
 using product_service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
 namespace product_service.Controllers;
@@ -28,10 +27,11 @@ public class ProductsController : ControllerBase
         {
             var products = await _ProductsService.GetAsync(page, pageSize, name, userId);
 
-            if (products == null || products.Count == 0)
+            if (products == null)
             {
-                return NotFound();
+                return StatusCode(500, $"Internal server error: product database not found");
             }
+            else if (products.Count == 0) return NoContent();
 
             return Ok(products);
         }
